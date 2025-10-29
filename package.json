@@ -1,0 +1,16 @@
+{
+  "name": "timetable-generator",
+  "version": "1.0.0",
+  "description": "Auto-generating timetable with subscription support",
+  "main": "generateTimetable.js",
+  "scripts": {
+    "generate": "node generateTimetable.js",
+    "generate-exam": "node generateExamTimetable.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
