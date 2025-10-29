@@ -86,6 +86,13 @@ async function getTimetable(token){
 }
 
 async function generateICS(timetable) {
+    // Check if timetable data is available
+    if (!timetable.duration || timetable.duration.trim() === "" || !timetable.rec || timetable.rec.length === 0) {
+        log("No timetable data available yet. Skipping ICS generation.");
+        console.log("No timetable data available yet. The semester may not have started or no classes are scheduled.");
+        return;
+    }
+    
     // Semester start date: week 1 is 2025-02-10 (Monday)
     const semesterStart = extractSemesterStart(timetable.duration);
     const events = [];
@@ -191,8 +198,13 @@ process.on('exit', () => {
 });
 
 function extractSemesterStart(durationStr) {
+    if (!durationStr || durationStr.trim() === "") {
+        throw new Error("Duration string is empty - no timetable data available");
+    }
     const match = durationStr.match(/^(\d{1,2})\s([A-Za-z]{3})/);
-    if (!match) throw new Error("Unable to parse semester start date");
+    if (!match) {
+        throw new Error(`Unable to parse semester start date from: "${durationStr}"`);
+    }
     const day = match[1].padStart(2, '0');
     const month = match[2];
     const year = "2025"; // fallback year if not in string
