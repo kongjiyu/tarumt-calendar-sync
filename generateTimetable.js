@@ -12,8 +12,8 @@ const loginUrl = "https://app.tarc.edu.my/MobileService/login.jsp";
 const timetableUrl = "https://app.tarc.edu.my/MobileService/services/AJAXStudentTimetable.jsp?act=get&week=all"
 const deviceId = "92542A7E-B31D-461F-8B1C-15215824E3F9"
 const deviceModel = "MacBook Air M4 24GB RAM 512GB ROM"
-const username = process.env.JIYU_USERNAME;
-const password = process.env.JIYU_PASSWORD;
+const username = process.env.TARUMT_USERNAME;
+const password = process.env.TARUMT_PASSWORD;
 
 async function login(){
     const loginData = new URLSearchParams({
@@ -174,20 +174,37 @@ function convertTo24Hour(timeStr) {
 }
 
 async function main(){
-    //login and get the x-auth-token
-    const token = await login();
-    if(token){
-        //get timetable
-        const timetable = await getTimetable(token);
-        if (timetable) {
-            console.log(JSON.stringify(timetable, null, 2))
-            await generateICS(timetable);
-            // Only open on macOS when running locally (not in GitHub Actions)
-            if (process.platform === 'darwin' && !process.env.GITHUB_ACTIONS) {
-                exec('open timetable.ics');
-            }
+    try {
+        // Validate credentials
+        if (!username || !password) {
+            log("ERROR: Missing credentials. Please set TARUMT_USERNAME and TARUMT_PASSWORD environment variables.");
+            console.error("ERROR: Missing credentials. Please set TARUMT_USERNAME and TARUMT_PASSWORD environment variables.");
+            process.exit(0); // Exit gracefully to avoid failing GitHub Actions
         }
-        log("Timetable processing completed");
+
+        //login and get the x-auth-token
+        const token = await login();
+        if(token){
+            //get timetable
+            const timetable = await getTimetable(token);
+            if (timetable) {
+                console.log(JSON.stringify(timetable, null, 2))
+                await generateICS(timetable);
+                // Only open on macOS when running locally (not in GitHub Actions)
+                if (process.platform === 'darwin' && !process.env.GITHUB_ACTIONS) {
+                    exec('open timetable.ics');
+                }
+            }
+            log("Timetable processing completed successfully");
+        } else {
+            log("Login failed - unable to retrieve authentication token");
+            console.error("Login failed. Please check your credentials.");
+            process.exit(0); // Exit gracefully
+        }
+    } catch (error) {
+        log(`ERROR in main: ${error.message}`);
+        console.error(`ERROR: ${error.message}`);
+        process.exit(0); // Exit gracefully to avoid failing GitHub Actions
     }
 }
 

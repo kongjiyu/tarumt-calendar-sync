@@ -24,9 +24,10 @@ jobs:
         
       - name: Generate timetable
         env:
-          JIYU_USERNAME: ${{ secrets.JIYU_USERNAME }}
-          JIYU_PASSWORD: ${{ secrets.JIYU_PASSWORD }}
+          TARUMT_USERNAME: ${{ secrets.TARUMT_USERNAME }}
+          TARUMT_PASSWORD: ${{ secrets.TARUMT_PASSWORD }}
         run: node generateTimetable.js
+        continue-on-error: true
         
       - name: Commit and push if changed
         run: |

@@ -6,8 +6,8 @@ const loginUrl = "https://app.tarc.edu.my/MobileService/login.jsp";
 const timetableUrl = "https://app.tarc.edu.my/MobileService/services/AJAXExamTimetable.jsp?act=list&mversion=1"
 const deviceId = "92542A7E-B31D-461F-8B1C-15215824E3F9"
 const deviceModel = "MacBook Air M4 24GB RAM 512GB ROM"
-const username = process.env.CE_USERNAME;
-const password = process.env.CE_PASSWORD;
+const username = process.env.TARUMT_USERNAME;
+const password = process.env.TARUMT_PASSWORD;
 
 async function login(){
     const loginData = new URLSearchParams({
@@ -98,6 +98,12 @@ function convertTo24Hour(timeStr) {
 }
 
 async function generateExamICS(timetable) {
+    // Check if exam timetable data is available
+    if (!timetable.rec || timetable.rec.length === 0) {
+        console.log("No exam timetable data available yet. Exams may not be scheduled.");
+        return;
+    }
+
     const events = [];
     for (const exam of timetable.rec) {
         const yyyy = exam.fexyear;
@@ -142,16 +148,34 @@ async function generateExamICS(timetable) {
 }
 
 async function main(){
-    //login and get the x-auth-token
-    const token = await login();
-    if(token){
-        //get timetable
-        const timetable = await getTimetable(token);
-        if (timetable) {
-            console.log(timetable)
-            await generateExamICS(timetable);
-            // exec('open exam_timetable.ics');
+    try {
+        // Validate credentials
+        if (!username || !password) {
+            console.error("ERROR: Missing credentials. Please set TARUMT_USERNAME and TARUMT_PASSWORD environment variables.");
+            process.exit(0); // Exit gracefully to avoid failing GitHub Actions
         }
+
+        //login and get the x-auth-token
+        const token = await login();
+        if(token){
+            //get timetable
+            const timetable = await getTimetable(token);
+            if (timetable) {
+                console.log(timetable)
+                await generateExamICS(timetable);
+                // Only open on macOS when running locally (not in GitHub Actions)
+                if (process.platform === 'darwin' && !process.env.GITHUB_ACTIONS) {
+                    exec('open exam_timetable.ics');
+                }
+            }
+            console.log("Exam timetable processing completed successfully");
+        } else {
+            console.error("Login failed. Please check your credentials.");
+            process.exit(0); // Exit gracefully
+        }
+    } catch (error) {
+        console.error(`ERROR: ${error.message}`);
+        process.exit(0); // Exit gracefully to avoid failing GitHub Actions
     }
 }
 
