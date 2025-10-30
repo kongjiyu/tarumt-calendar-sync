@@ -1,8 +1,20 @@
 # 📅 Auto-Updating TARUMT Timetable Generator
 
+![License](https://img.shields.io/github/license/kongjiyu/tarumt-calendar-sync)
+![GitHub stars](https://img.shields.io/github/stars/kongjiyu/tarumt-calendar-sync)
+![GitHub forks](https://img.shields.io/github/forks/kongjiyu/tarumt-calendar-sync)
+
 > Automatically sync your TARUMT class schedule to any calendar app with daily auto-updates!
 
 This tool generates your TARUMT timetable as a subscribable `.ics` file that automatically updates daily. Once set up, your calendar apps (iPhone, Google Calendar, Outlook, etc.) will always show your latest class schedule.
+
+**✨ Features:**
+- 🔄 Auto-updates daily at 6:00 AM UTC (2:00 PM MYT)
+- � Combines class schedule AND exam timetable in one file
+- �📱 Works with all major calendar apps
+- 🚀 Fork and set up in 5 minutes
+- 🔒 Secure credential storage with GitHub Secrets
+- 🆓 100% free and open source
 
 ---
 
@@ -53,13 +65,13 @@ This makes your timetable file publicly accessible for calendar subscriptions:
 After GitHub Pages is enabled, your calendar subscription URL will be:
 
 ```
-https://YOUR_GITHUB_USERNAME.github.io/timetable/timetable.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
 ```
 
 **Example:**
 If your GitHub username is `johnsmith`, the URL would be:
 ```
-https://johnsmith.github.io/timetable/timetable.ics
+https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
 ```
 
 ### Step 5: Test the Workflow
@@ -125,11 +137,12 @@ Once the workflow runs successfully, subscribe in your calendar app:
 
 The GitHub Action workflow runs automatically:
 - **Daily** at **6:00 AM UTC** (2:00 PM Malaysia Time)
-- Fetches your latest timetable from TARUMT portal
-- Generates an updated `.ics` file
+- Fetches your latest class timetable from TARUMT portal
+- Fetches your exam schedule (if available)
+- Combines both into a single `.ics` file
 - Publishes it via GitHub Pages
 
-Your calendar apps will automatically refresh and show the latest schedule!
+Your calendar apps will automatically refresh and show the latest schedule including exams!
 
 ### Manual Updates
 
@@ -148,8 +161,8 @@ If you want to test or generate the timetable locally:
 
 1. Clone your forked repository:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/timetable.git
-   cd timetable
+   git clone https://github.com/YOUR_USERNAME/tarumt-calendar-sync.git
+   cd tarumt-calendar-sync
    ```
 
 2. Install dependencies:
@@ -166,14 +179,16 @@ If you want to test or generate the timetable locally:
 ### Commands
 
 ```bash
-# Generate timetable
+# Generate combined timetable (classes + exams)
 npm run generate
 
-# Generate exam timetable
+# Legacy: Generate exam timetable only
 npm run generate-exam
 ```
 
 The generated `.ics` files will open automatically on macOS.
+
+> **Note:** The main `timetable.ics` file now includes BOTH classes and exams, so you typically only need to subscribe to one calendar!
 
 ---
 
@@ -181,8 +196,8 @@ The generated `.ics` files will open automatically on macOS.
 
 | File | Description |
 |------|-------------|
-| `timetable.ics` | Your class timetable (main file to subscribe to) |
-| `ce-exam_timetable.ics` | Exam schedule |
+| `timetable.ics` | **Main file** - Combined class schedule AND exam timetable (subscribe to this!) |
+| `ce-exam_timetable.ics` | Legacy exam-only file (generated separately if you run `npm run generate-exam`) |
 
 ---
 
@@ -196,9 +211,10 @@ The generated `.ics` files will open automatically on macOS.
 - Re-add them if needed
 
 **No timetable data:**
-- This is normal if the semester hasn't started yet
-- The workflow will complete successfully and generate an empty file
-- It will populate automatically once classes are scheduled
+- This is normal if the semester hasn't started yet or exams aren't scheduled
+- The workflow will complete successfully and generate what's available
+- Classes will appear once the semester starts
+- Exams will appear once they're scheduled in the system
 
 ### Calendar not updating
 
@@ -217,7 +233,7 @@ The generated `.ics` files will open automatically on macOS.
 
 **Check GitHub Pages:**
 - Settings → Pages → Make sure it's enabled and deployed
-- The URL should be: `https://YOUR_USERNAME.github.io/timetable/timetable.ics`
+- The URL should be: `https://YOUR_USERNAME.github.io/tarumt-calendar-sync/timetable.ics`
 
 **Repository must be public:**
 - Private repositories need GitHub Pro for Pages
@@ -241,7 +257,7 @@ Your classmates can fork this repository and follow the same steps to create the
 
 Or, if you want to share your timetable with others:
 ```
-https://YOUR_USERNAME.github.io/timetable/timetable.ics
+https://YOUR_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
 ```
 
 They can subscribe to this URL to see your schedule (useful for group projects or study sessions).

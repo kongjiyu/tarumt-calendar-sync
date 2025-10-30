@@ -1,7 +1,7 @@
 {
   "name": "timetable-generator",
-  "version": "1.0.0",
-  "description": "Auto-generating timetable with subscription support",
+  "version": "2.0.0",
+  "description": "Auto-sync TARUMT class schedule and exams to any calendar app with daily updates",
   "main": "generateTimetable.js",
   "scripts": {
     "generate": "node generateTimetable.js",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/kongjiyu/timetable.git"
+    "url": "https://github.com/kongjiyu/tarumt-calendar-sync.git"
   },
   "keywords": [
     "timetable",
