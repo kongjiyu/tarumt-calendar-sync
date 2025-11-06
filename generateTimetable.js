@@ -309,8 +309,17 @@ function extractSemesterStart(durationStr) {
     if (!match) {
         throw new Error(`Unable to parse semester start date from: "${durationStr}"`);
     }
-    const day = match[1].padStart(2, '0');
+    const day = parseInt(match[1], 10);
     const month = match[2];
     const year = "2025"; // fallback year if not in string
-    return new Date(`${day} ${month} ${year}`);
+    
+    // Parse month name to month number
+    const monthMap = {
+        'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+        'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+    };
+    
+    // Create date using UTC to avoid timezone issues
+    const date = new Date(year, monthMap[month], day);
+    return date;
 }
