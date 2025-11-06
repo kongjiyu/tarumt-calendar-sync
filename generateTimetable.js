@@ -134,12 +134,7 @@ async function generateICS(classTimetable, examTimetable) {
                     const baseDate = new Date(semesterStart);
                     baseDate.setDate(baseDate.getDate() + (week - 1) * 7 + dow);
 
-                    // Format date components without timezone conversion
-                    const yyyy = baseDate.getFullYear();
-                    const mm = String(baseDate.getMonth() + 1).padStart(2, '0');
-                    const dd = String(baseDate.getDate()).padStart(2, '0');
-                    const baseDateStr = `${yyyy}-${mm}-${dd}`;
-                    
+                    const baseDateStr = baseDate.toISOString().split("T")[0];
                     const startDateTime = new Date(baseDateStr + "T" + convertTo24Hour(cls.fstart));
                     const endDateTime = new Date(baseDateStr + "T" + convertTo24Hour(cls.fend));
 
