@@ -154,7 +154,7 @@ Once the workflow runs successfully, subscribe in your calendar app:
 
 The GitHub Action workflow runs automatically:
 
-- **Daily** at **6:00 AM UTC** (2:00 PM Malaysia Time)
+- **Daily** at **6:00 AM** (Malaysia Time)
 - Fetches your latest class timetable from TARUMT portal
 - Fetches your exam schedule (if available)
 - Combines both into a single `.ics` file
