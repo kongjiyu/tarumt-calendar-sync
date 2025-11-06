@@ -10,7 +10,7 @@ This tool generates your TARUMT timetable as a subscribable `.ics` file that aut
 
 **✨ Features:**
 
-- 🔄 Auto-updates daily at 6:00 AM UTC (2:00 PM MYT)
+- 🔄 Auto-updates daily at 6:00 AM Malaysia Time
 - � Combines class schedule AND exam timetable in one file
 - �📱 Works with all major calendar apps
 - 🚀 Fork and set up in 5 minutes
