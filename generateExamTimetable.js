@@ -143,8 +143,8 @@ async function generateExamICS(timetable) {
         "END:VCALENDAR"
     ].join("\n");
 
-    fs.writeFileSync("ce-exam_timetable.ics", icsContent);
-    console.log("ICS file generated: ce-exam_timetable.ics");
+    fs.writeFileSync("exam_timetable.ics", icsContent);
+    console.log("ICS file generated: exam_timetable.ics");
 }
 
 async function main(){

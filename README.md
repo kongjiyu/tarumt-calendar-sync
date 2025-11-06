@@ -215,10 +215,10 @@ The generated `.ics` files will open automatically on macOS.
 ## 📂 Generated Files
 
 
-| File                    | Description                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------- |
-| `timetable.ics`         | **Main file** - Combined class schedule AND exam timetable (subscribe to this!) |
-| `ce-exam_timetable.ics` | Legacy exam-only file (generated separately if you run`npm run generate-exam`)  |
+| File                 | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `timetable.ics`      | **Main file** - Combined class schedule AND exam timetable (subscribe to this!) |
+| `exam_timetable.ics` | Legacy exam-only file (generated separately if you run`npm run generate-exam`)  |
 
 ---
 
