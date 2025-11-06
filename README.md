@@ -113,7 +113,6 @@ Once the workflow runs successfully, subscribe in your calendar app:
 2. Tap **Add Account** → **Other** → **Add Subscribed Calendar**
 3. Paste your subscription URL
 4. Tap **Next** → **Save**
-5. Recommended: Set refresh to "Every hour"
 
 **Mac:**
 

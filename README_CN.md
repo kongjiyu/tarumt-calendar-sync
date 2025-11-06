@@ -113,7 +113,6 @@ https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
 2. 点击 **添加账户** → **其他** → **添加已订阅的日历**
 3. 粘贴您的订阅链接
 4. 点击 **下一步** → **存储**
-5. 建议：设置刷新频率为"每小时"
 
 **Mac：**
 
