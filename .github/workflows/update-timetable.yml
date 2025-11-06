@@ -21,6 +21,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         
+      - name: Set timezone
+        run: sudo timedatectl set-timezone Asia/Kuala_Lumpur
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
