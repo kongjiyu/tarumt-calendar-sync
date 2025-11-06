@@ -6,6 +6,8 @@
 
 > Automatically sync your TARUMT class schedule to any calendar app with daily auto-updates!
 
+English | [简体中文](README_CN.md)
+
 This tool generates your TARUMT timetable as a subscribable `.ics` file that automatically updates daily. Once set up, your calendar apps (iPhone, Google Calendar, Outlook, etc.) will always show your latest class schedule.
 
 **✨ Features:**
