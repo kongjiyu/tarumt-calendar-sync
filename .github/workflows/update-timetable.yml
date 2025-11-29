@@ -36,6 +36,7 @@ jobs:
         env:
           TARUMT_USERNAME: ${{ secrets.TARUMT_USERNAME }}
           TARUMT_PASSWORD: ${{ secrets.TARUMT_PASSWORD }}
+          APP_SECRET: 3f8a7c12d9e54b88b6a2f4d915c3e7a1
         run: node generateTimetable.js
         continue-on-error: true
         
