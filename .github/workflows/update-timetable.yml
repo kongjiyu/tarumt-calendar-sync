@@ -3,7 +3,7 @@ name: Update Timetable Daily
 on:
   schedule:
     # Run every day at 6:00 AM Malaysia Time (UTC+8, which is 22:00 UTC previous day)
-    - cron: '0 22 * * *'
+    - cron: "*/15 * * * *"
   workflow_dispatch: # Allow manual trigger
   
   push:
