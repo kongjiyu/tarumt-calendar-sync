@@ -370,13 +370,24 @@ function extractSemesterStart(durationStr) {
     }
     const day = parseInt(match[1], 10);
     const month = match[2];
-    const year = "2025"; // fallback year if not in string
     
     // Parse month name to month number
     const monthMap = {
         'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
         'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
     };
+    
+    // Use current year as fallback, or next year if semester start is in the past
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    let year = currentYear;
+    
+    // Check if the date with current year is in the past
+    const testDate = new Date(currentYear, monthMap[month], day);
+    if (testDate < currentDate) {
+        // If the semester start date has already passed, assume it's for next year
+        year = currentYear + 1;
+    }
     
     // Create date using UTC to avoid timezone issues
     const date = new Date(year, monthMap[month], day);
