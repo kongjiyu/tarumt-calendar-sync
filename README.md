@@ -101,7 +101,23 @@ Before subscribing, let's make sure everything works:
 
 ---
 
-## 📱 Subscribe to Your Timetable
+## � Updating Your Forked Repository
+
+If you forked this repository before and there are new updates available, you can sync your fork:
+
+### Using GitHub Web Interface (Easiest)
+
+1. Go to your forked repository on GitHub
+2. You'll see a message like "This branch is X commits behind kongjiyu:main"
+3. Click **Sync fork** button
+4. Click **Discard x commits**
+
+   ![1769262480282](images/README/1769262480282.png)
+
+   > **Note:** If you've made custom changes to the code, you may need to resolve merge conflicts. The most common updates will be bug fixes and new features in the generator scripts.
+   >
+
+## 🀽� Subscribe to Your Timetable
 
 Once the workflow runs successfully, subscribe in your calendar app:
 
