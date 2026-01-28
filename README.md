@@ -3,6 +3,7 @@
 ![License](https://img.shields.io/github/license/kongjiyu/tarumt-calendar-sync)
 ![GitHub stars](https://img.shields.io/github/stars/kongjiyu/tarumt-calendar-sync)
 ![GitHub forks](https://img.shields.io/github/forks/kongjiyu/tarumt-calendar-sync)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2?logo=discord&logoColor=white)](https://discord.gg/6Dad4bGHfQ)
 
 > Automatically sync your TARUMT class schedule to any calendar app with daily auto-updates!
 
