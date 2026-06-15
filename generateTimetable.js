@@ -176,10 +176,15 @@ async function getExamTimetable(token){
 async function generateICS(classTimetable, examTimetable) {
     const events = [];
     
+    // Extract semester start date (used by class events and FYP events)
+    let semesterStart = null;
+    if (classTimetable && classTimetable.duration && classTimetable.duration.trim() !== "") {
+        semesterStart = extractSemesterStart(classTimetable.duration);
+    }
+
     // Process class timetable
-    if (classTimetable && classTimetable.duration && classTimetable.duration.trim() !== "" && classTimetable.rec && classTimetable.rec.length > 0) {
+    if (semesterStart && classTimetable.rec && classTimetable.rec.length > 0) {
         log("Processing class timetable data...");
-        const semesterStart = extractSemesterStart(classTimetable.duration);
         
         for (const day of classTimetable.rec) {
             const dow = parseInt(day.dow); // 1=Mon, ..., 7=Sun
@@ -256,6 +261,13 @@ async function generateICS(classTimetable, examTimetable) {
         console.log("No exam timetable data available yet. Exams may not be scheduled.");
     }
 
+    // Log FYP/direct entries (ignored — no scheduled time)
+    if (classTimetable && classTimetable.direct && classTimetable.direct.length > 0) {
+        for (const entry of classTimetable.direct) {
+            log(`FYP entry ignored: ${entry.fdesc} (${entry.funits})`);
+        }
+    }
+
     // Only generate ICS file if we have at least some events
     if (events.length > 0) {
         const icsContent = [
@@ -264,6 +276,15 @@ async function generateICS(classTimetable, examTimetable) {
             "PRODID:-//TARUMT//Timetable Generator//EN",
             "CALSCALE:GREGORIAN",
             "METHOD:PUBLISH",
+            "BEGIN:VTIMEZONE",
+            "TZID:Asia/Kuala_Lumpur",
+            "BEGIN:STANDARD",
+            "DTSTART:19700101T000000",
+            "TZOFFSETFROM:+0800",
+            "TZOFFSETTO:+0800",
+            "TZNAME:MYT",
+            "END:STANDARD",
+            "END:VTIMEZONE",
             ...events,
             "END:VCALENDAR"
         ].join("\n");
