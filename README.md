@@ -3,6 +3,7 @@
 ![License](https://img.shields.io/github/license/kongjiyu/tarumt-calendar-sync)
 ![GitHub stars](https://img.shields.io/github/stars/kongjiyu/tarumt-calendar-sync)
 ![GitHub forks](https://img.shields.io/github/forks/kongjiyu/tarumt-calendar-sync)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2?logo=discord&logoColor=white)](https://discord.gg/6Dad4bGHfQ)
 
 > Automatically sync your TARUMT class schedule to any calendar app with daily auto-updates!
 
@@ -101,7 +102,23 @@ Before subscribing, let's make sure everything works:
 
 ---
 
-## 📱 Subscribe to Your Timetable
+## � Updating Your Forked Repository
+
+If you forked this repository before and there are new updates available, you can sync your fork:
+
+### Using GitHub Web Interface (Easiest)
+
+1. Go to your forked repository on GitHub
+2. You'll see a message like "This branch is X commits behind kongjiyu:main"
+3. Click **Sync fork** button
+4. Click **Discard x commits**
+
+   ![1769262480282](images/README/1769262480282.png)
+
+   > **Note:** If you've made custom changes to the code, you may need to resolve merge conflicts. The most common updates will be bug fixes and new features in the generator scripts.
+   >
+
+## 🀽� Subscribe to Your Timetable
 
 Once the workflow runs successfully, subscribe in your calendar app:
 

@@ -1,0 +1,5 @@
+node_modules/
+.DS_Store
+timetable.log
+.env
+package-lock.json

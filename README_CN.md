@@ -3,6 +3,7 @@
 ![License](https://img.shields.io/github/license/kongjiyu/tarumt-calendar-sync)
 ![GitHub stars](https://img.shields.io/github/stars/kongjiyu/tarumt-calendar-sync)
 ![GitHub forks](https://img.shields.io/github/forks/kongjiyu/tarumt-calendar-sync)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Us-5865F2?logo=discord&logoColor=white)](https://discord.gg/6Dad4bGHfQ)
 
 > 自动同步您的 TARUMT 课程表到任何日历应用，每日自动更新！
 
@@ -101,7 +102,24 @@ https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
 
 ---
 
-## 📱 订阅您的课程表
+## � 更新您的 Fork 仓库
+
+如果您之前 fork 了此仓库，并且有新的更新可用，您可以同步您的 fork：
+
+### 方法 1：使用 GitHub 网页界面（最简单）
+
+1. 前往您在 GitHub 上 fork 的仓库
+2. 您会看到类似"This branch is X commits behind kongjiyu:main"的消息
+3. 点击 **Sync fork** 按钮
+4. 点击 **Discard x commits**
+
+   ![1769262620203](images/README_CN/1769262620203.png)
+
+```> **注意：** 如果您对代码进行了自定义更改，可能需要解决合并冲突。最常见的更新将是生成器脚本中的错误修复和新功能。
+
+---
+
+## �� 订阅您的课程表
 
 工作流成功运行后，在您的日历应用中订阅：
 
@@ -206,7 +224,6 @@ npm run generate
 # 旧版：仅生成考试时间表
 npm run generate-exam
 ```
-
 生成的 `.ics` 文件将在 macOS 上自动打开。
 
 > **注意：** 主要的 `timetable.ics` 文件现在包含课程和考试两者，因此您通常只需订阅一个日历！
@@ -289,7 +306,6 @@ npm run generate-exam
 ```
 https://您的用户名.github.io/tarumt-calendar-sync/timetable.ics
 ```
-
 他们可以订阅此链接以查看您的课程安排（适用于小组项目或学习会话）。
 
 ---

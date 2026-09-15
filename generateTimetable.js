@@ -1,5 +1,6 @@
 require('dotenv').config();
 const fs = require('fs');
+const crypto = require('crypto');
 const logStream = fs.createWriteStream('timetable.log', { flags: 'a' });
 function log(message) {
     const timestamp = new Date().toISOString();
@@ -8,29 +9,61 @@ function log(message) {
 // for execute at macos
 const { exec } = require('child_process'); 
 
-const loginUrl = "https://app.tarc.edu.my/MobileService/login.jsp";
+const loginUrl = "https://app.tarc.edu.my/MobileService/studentLogin.jsp";
 const classTimetableUrl = "https://app.tarc.edu.my/MobileService/services/AJAXStudentTimetable.jsp?act=get&week=all"
 const examTimetableUrl = "https://app.tarc.edu.my/MobileService/services/AJAXExamTimetable.jsp?act=list&mversion=1"
 const deviceId = "92542A7E-B31D-461F-8B1C-15215824E3F9"
 const deviceModel = "MacBook Air M4 24GB RAM 512GB ROM"
 const username = process.env.TARUMT_USERNAME;
 const password = process.env.TARUMT_PASSWORD;
+// APP_SECRET is set in GitHub Actions workflow, fallback for local development
+const APP_SECRET = process.env.APP_SECRET || "3f8a7c12d9e54b88b6a2f4d915c3e7a1";
+
+/**
+ * Create HMAC-SHA-256 signature
+ * @param {string} data - The data to sign (params + timestamp)
+ * @param {string} secret - The secret key
+ * @returns {string} Base64 encoded signature
+ */
+function createSignature(data, secret) {
+    const hmac = crypto.createHmac('sha256', secret);
+    hmac.update(data);
+    return hmac.digest('base64');
+}
 
 async function login(){
-    const loginData = new URLSearchParams({
+    // Generate timestamp
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    // Create params object
+    const params = {
         username: username,
         password: password,
         deviceid: deviceId,
         devicemodel: deviceModel,
-        appversion: "2.0.18"
-    });
+        appversion: "2.0.19",
+        fplatform: "ios"
+    };
+    
+    // Create signature data: key=value&key=value|timestamp (not URL encoded)
+    const paramsString = Object.entries(params)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+    const signatureData = paramsString + '|' + timestamp;
+    const signature = createSignature(signatureData, APP_SECRET);
+    
+    // Create URLSearchParams for the actual request body
+    const loginData = new URLSearchParams(params);
 
     const fetchOptions = {
         method: "POST",
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-            'Origin': 'ionic://localhost'
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.39 Mobile Safari/537.36',
+            'Origin': 'ionic://localhost',
+            'Referer': 'https://localhost/',
+            'X-Signature': signature,
+            'X-Timestamp': timestamp.toString()
         },
         body: loginData.toString()
     };
@@ -59,13 +92,26 @@ async function login(){
 }
 
 async function getClassTimetable(token){
+    // Generate timestamp
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    // Create signature for the request
+    const params = { act: 'get', week: 'all' };
+    const paramsString = Object.entries(params)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+    const signatureData = paramsString + '|' + timestamp;
+    const signature = createSignature(signatureData, APP_SECRET);
+
     const fetchOptions = {
         method: "POST",
         headers: {
             'X-Auth': token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-            'Origin': 'ionic://localhost'
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.39 Mobile Safari/537.36',
+            'Origin': 'ionic://localhost',
+            'X-Signature': signature,
+            'X-Timestamp': timestamp.toString()
         }
     };
 
@@ -87,13 +133,26 @@ async function getClassTimetable(token){
 }
 
 async function getExamTimetable(token){
+    // Generate timestamp
+    const timestamp = Math.floor(Date.now() / 1000);
+    
+    // Create signature for the request
+    const params = { act: 'list', mversion: '1' };
+    const paramsString = Object.entries(params)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('&');
+    const signatureData = paramsString + '|' + timestamp;
+    const signature = createSignature(signatureData, APP_SECRET);
+
     const fetchOptions = {
         method: "POST",
         headers: {
             'X-Auth': token,
             'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
-            'Origin': 'ionic://localhost'
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 15) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.39 Mobile Safari/537.36',
+            'Origin': 'ionic://localhost',
+            'X-Signature': signature,
+            'X-Timestamp': timestamp.toString()
         }
     };
 
@@ -117,10 +176,15 @@ async function getExamTimetable(token){
 async function generateICS(classTimetable, examTimetable) {
     const events = [];
     
+    // Extract semester start date (used by class events and FYP events)
+    let semesterStart = null;
+    if (classTimetable && classTimetable.duration && classTimetable.duration.trim() !== "") {
+        semesterStart = extractSemesterStart(classTimetable.duration);
+    }
+
     // Process class timetable
-    if (classTimetable && classTimetable.duration && classTimetable.duration.trim() !== "" && classTimetable.rec && classTimetable.rec.length > 0) {
+    if (semesterStart && classTimetable.rec && classTimetable.rec.length > 0) {
         log("Processing class timetable data...");
-        const semesterStart = extractSemesterStart(classTimetable.duration);
         
         for (const day of classTimetable.rec) {
             const dow = parseInt(day.dow); // 1=Mon, ..., 7=Sun
@@ -197,6 +261,13 @@ async function generateICS(classTimetable, examTimetable) {
         console.log("No exam timetable data available yet. Exams may not be scheduled.");
     }
 
+    // Log FYP/direct entries (ignored — no scheduled time)
+    if (classTimetable && classTimetable.direct && classTimetable.direct.length > 0) {
+        for (const entry of classTimetable.direct) {
+            log(`FYP entry ignored: ${entry.fdesc} (${entry.funits})`);
+        }
+    }
+
     // Only generate ICS file if we have at least some events
     if (events.length > 0) {
         const icsContent = [
@@ -205,6 +276,15 @@ async function generateICS(classTimetable, examTimetable) {
             "PRODID:-//TARUMT//Timetable Generator//EN",
             "CALSCALE:GREGORIAN",
             "METHOD:PUBLISH",
+            "BEGIN:VTIMEZONE",
+            "TZID:Asia/Kuala_Lumpur",
+            "BEGIN:STANDARD",
+            "DTSTART:19700101T000000",
+            "TZOFFSETFROM:+0800",
+            "TZOFFSETTO:+0800",
+            "TZNAME:MYT",
+            "END:STANDARD",
+            "END:VTIMEZONE",
             ...events,
             "END:VCALENDAR"
         ].join("\n");
@@ -311,7 +391,6 @@ function extractSemesterStart(durationStr) {
     }
     const day = parseInt(match[1], 10);
     const month = match[2];
-    const year = "2025"; // fallback year if not in string
     
     // Parse month name to month number
     const monthMap = {
@@ -319,7 +398,10 @@ function extractSemesterStart(durationStr) {
         'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
     };
     
-    // Create date using UTC to avoid timezone issues
-    const date = new Date(year, monthMap[month], day);
+    // Use current year since TARUMT always returns the current active semester
+    const currentYear = new Date().getFullYear();
+    
+    // Create date using the current year
+    const date = new Date(currentYear, monthMap[month], day);
     return date;
 }
