@@ -3,4 +3,3 @@ node_modules/
 timetable.log
 .env
 package-lock.json
-timetable.ics
