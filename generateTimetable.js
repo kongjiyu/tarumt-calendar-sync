@@ -151,13 +151,15 @@ function formatICSDate(date) {
     return `${yyyy}${mm}${dd}T${hh}${min}00`;
 }
 
-function buildICSContent(events) {
+function buildICSContent(events, calendarName) {
     return [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
         "PRODID:-//TARUMT//Timetable Generator//EN",
         "CALSCALE:GREGORIAN",
         "METHOD:PUBLISH",
+        `X-WR-CALNAME:${calendarName}`,
+        "X-WR-TIMEZONE:Asia/Kuala_Lumpur",
         "BEGIN:VTIMEZONE",
         "TZID:Asia/Kuala_Lumpur",
         "BEGIN:STANDARD",
