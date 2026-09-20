@@ -162,6 +162,7 @@ function buildICSContent(events, calendarName) {
         "X-WR-TIMEZONE:Asia/Kuala_Lumpur",
         "BEGIN:VTIMEZONE",
         "TZID:Asia/Kuala_Lumpur",
+        "X-LIC-LOCATION:Asia/Kuala_Lumpur",
         "BEGIN:STANDARD",
         "DTSTART:19700101T000000",
         "TZOFFSETFROM:+0800",
