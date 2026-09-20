@@ -304,10 +304,10 @@ async function main() {
         }
 
         // 4. Write all 4 calendar files
-        fs.writeFileSync("timetable_normal.ics", buildICSContent(normalEvents));
-        fs.writeFileSync("timetable_holidays.ics", buildICSContent(holidayEvents));
-        fs.writeFileSync("timetable_replacements.ics", buildICSContent(replacementEvents));
-        fs.writeFileSync("timetable_exams.ics", buildICSContent(examEvents));
+        fs.writeFileSync("timetable_normal.ics", buildICSContent(normalEvents, "TARUMT - Classes"));
+        fs.writeFileSync("timetable_holidays.ics", buildICSContent(holidayEvents, "TARUMT - Holiday Clashes"));
+        fs.writeFileSync("timetable_replacements.ics", buildICSContent(replacementEvents, "TARUMT - Replacements"));
+        fs.writeFileSync("timetable_exams.ics", buildICSContent(examEvents, "TARUMT - Exams"));
 
         log(`\n🎉 Calendars successfully generated:`);
         log(`- timetable_normal.ics: ${normalEvents.length} events`);
