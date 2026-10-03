@@ -16,8 +16,8 @@ const deviceId = "92542A7E-B31D-461F-8B1C-15215824E3F9"
 const deviceModel = "MacBook Air M4 24GB RAM 512GB ROM"
 const username = process.env.TARUMT_USERNAME;
 const password = process.env.TARUMT_PASSWORD;
-// APP_SECRET is set in GitHub Actions workflow, fallback for local development
-const APP_SECRET = process.env.APP_SECRET || "3f8a7c12d9e54b88b6a2f4d915c3e7a1";
+// APP_SECRET must be set in environment variables (GitHub Actions workflow or local .env)
+const APP_SECRET = process.env.APP_SECRET;
 
 /**
  * Create HMAC-SHA-256 signature
