@@ -14,7 +14,7 @@
 **✨ 功能特点：**
 
 - 🔄 每天马来西亚时间早上 6:00 自动更新
-- 📚 将课程表和考试时间表合并在一个文件中
+- 📚 普通课程、假期冲突、补课和考试分别订阅
 - 📱 支持所有主流日历应用
 - 🚀 5 分钟即可完成设置
 - 🔒 使用 GitHub Secrets 安全存储凭证
@@ -61,32 +61,31 @@
 
 ### 步骤 3：启用 GitHub Pages
 
-这使您的课程表文件可公开访问，供日历订阅：
+在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
 
-1. 在您的仓库中，前往 **Settings** → **Pages**
-2. 在 **Source** 下，选择：
-   - **Deploy from a branch**
-   - Branch：`main`
-   - Folder：`/ (root)`
-3. 点击 **Save**
-4. 等待约 1 分钟完成部署
+### 步骤 4：选择订阅方式
 
-![1762412670899](images/README/1762412670899.png)
+**推荐：保留原本的完整日历。** 只需订阅一个地址，即可查看普通课程、假期冲突课程、补课及考试；已有订阅无需更换链接：
 
-### 步骤 4：获取您的订阅链接
-
-启用 GitHub Pages 后，您的日历订阅链接将是：
-
-```
-https://您的GITHUB用户名.github.io/tarumt-calendar-sync/timetable.ics
+```text
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
 ```
 
-**示例：**
-如果您的 GitHub 用户名是 `johnsmith`，链接将是：
+**可选：分别订阅四个分类日历。** 如果想为不同类别设置颜色，可使用以下地址。请在完整日历和分类日历之间二选一，避免重复显示。
 
+
+将下面的 `YOUR_GITHUB_USERNAME` 替换为您自己的 GitHub 用户名，分别添加需要的日历订阅，并设置不同颜色：
+
+```text
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_normal.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_holidays.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_replacements.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_exams.ics
 ```
-https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
-```
+
+依次对应：普通课程、公共假期冲突课程、补课、考试。假期冲突日历仅提示课程与假期重叠，不代表课程确认照常进行。
+
+**旧版升级：** 保留原来的 `timetable.ics` 订阅即可。同步 fork 后，将 Pages 来源改为 GitHub Actions，并手动运行工作流。五个日历文件由 Actions 生成并部署，不提交到仓库；公开订阅链接仍可被他人访问。
 
 ### 步骤 5：测试工作流
 
@@ -96,7 +95,7 @@ https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
 2. 点击 **Update Timetable Daily** 工作流
 3. 点击 **Run workflow** → **Run workflow**
 4. 等待完成（绿色勾号 ✅）
-5. 检查 `timetable.ics` 文件是否出现在您的仓库中
+5. 打开所选订阅链接，确认各自可以下载 `.ics` 文件。
 
    ![1762412750395](images/README/1762412750395.png)
 
@@ -115,7 +114,7 @@ https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
 
    ![1769262620203](images/README_CN/1769262620203.png)
 
-```> **注意：** 如果您对代码进行了自定义更改，可能需要解决合并冲突。最常见的更新将是生成器脚本中的错误修复和新功能。
+> **注意：** 如果您对代码进行了自定义更改，可能需要解决合并冲突。最常见的更新将是生成器脚本中的错误修复和新功能。
 
 ---
 
@@ -176,7 +175,7 @@ GitHub Action 工作流自动运行：
 - **每天** **马来西亚时间早上 6:00**
 - 从 TARUMT 门户获取最新的课程表
 - 获取您的考试安排（如果有）
-- 将两者合并到一个 `.ics` 文件中
+- 生成一个完整日历和四个分类 `.ics` 日历
 - 通过 GitHub Pages 发布
 
 您的日历应用将自动刷新并显示最新的课程安排，包括考试！
@@ -218,25 +217,21 @@ GitHub Action 工作流自动运行：
 ### 命令
 
 ```bash
-# 生成合并的课程表（课程 + 考试）
 npm run generate
-
-# 旧版：仅生成考试时间表
-npm run generate-exam
+npm test
 ```
-生成的 `.ics` 文件将在 macOS 上自动打开。
 
-> **注意：** 主要的 `timetable.ics` 文件现在包含课程和考试两者，因此您通常只需订阅一个日历！
-
----
+本地生成文件位于当前目录，可手动导入日历应用。手动导入不会自动更新；自动更新请使用 Pages 订阅链接。
 
 ## 📂 生成的文件
 
-
-| 文件                 | 描述                                                         |
-| -------------------- | ------------------------------------------------------------ |
-| `timetable.ics`      | **主文件** - 合并的课程表和考试时间表（订阅此文件！）        |
-| `exam_timetable.ics` | 旧版仅考试文件（如果运行`npm run generate-exam` 则单独生成） |
+| 文件 | 内容 |
+| --- | --- |
+| `timetable.ics` | 完整日历：全部课程与考试（推荐，兼容原订阅） |
+| `timetable_normal.ics` | 普通课程 |
+| `timetable_holidays.ics` | 公共假期冲突课程 |
+| `timetable_replacements.ics` | 补课 |
+| `timetable_exams.ics` | 考试 |
 
 ---
 
@@ -253,7 +248,8 @@ npm run generate-exam
 **没有课程表数据：**
 
 - 如果学期尚未开始或考试未安排，这是正常的
-- 工作流将成功完成并生成可用的内容
+- 有效的空响应会生成空日历；没有教学周时仍可发布考试。
+- 请求失败或响应格式异常会让工作流失败，并保留上次部署的日历。
 - 学期开始后将显示课程
 - 考试安排后将显示考试
 

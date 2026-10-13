@@ -14,7 +14,7 @@ This tool generates your TARUMT timetable as a subscribable `.ics` file that aut
 **✨ Features:**
 
 - 🔄 Auto-updates daily at 6:00 AM Malaysia Time
-- � Combines class schedule AND exam timetable in one file
+- � Separate feeds for classes, holiday clashes, replacements, and exams
 - �📱 Works with all major calendar apps
 - 🚀 Fork and set up in 5 minutes
 - 🔒 Secure credential storage with GitHub Secrets
@@ -61,32 +61,31 @@ Your TARUMT credentials need to be stored securely in GitHub:
 
 ### Step 3: Enable GitHub Pages
 
-This makes your timetable file publicly accessible for calendar subscriptions:
+In **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**.
 
-1. In your repository, go to **Settings** → **Pages**
-2. Under **Source**, select:
-   - **Deploy from a branch**
-   - Branch: `main`
-   - Folder: `/ (root)`
-3. Click **Save**
-4. Wait ~1 minute for deployment
+### Step 4: Choose Your Subscription
 
-![1762412670899](images/README/1762412670899.png)
+**Recommended: keep the original combined calendar.** One subscription includes normal classes, holiday clashes, replacements, and exams. Existing subscribers can keep the same URL:
 
-### Step 4: Get Your Subscription URL
-
-After GitHub Pages is enabled, your calendar subscription URL will be:
-
-```
+```text
 https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
 ```
 
-**Example:**
-If your GitHub username is `johnsmith`, the URL would be:
+**Optional: subscribe to separate calendars** to assign different colors to each category. Choose either the combined feed or the category feeds to avoid displaying duplicate events.
 
+
+Replace `YOUR_GITHUB_USERNAME` below with your own username. Add each desired URL as a separate subscription and assign it a color:
+
+```text
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_normal.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_holidays.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_replacements.ics
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_exams.ics
 ```
-https://johnsmith.github.io/tarumt-calendar-sync/timetable.ics
-```
+
+These feeds contain normal classes, holiday clashes, replacement classes, and exams respectively. A holiday clash is informational; it does not confirm that the class will take place.
+
+**Upgrading from the old version:** Keep your existing `timetable.ics` subscription. After syncing your fork, switch the Pages source to GitHub Actions and run the workflow manually. All five files are generated and deployed by Actions without being committed to the repository. Their public subscription URLs remain accessible to others.
 
 ### Step 5: Test the Workflow
 
@@ -96,7 +95,7 @@ Before subscribing, let's make sure everything works:
 2. Click on **Update Timetable Daily** workflow
 3. Click **Run workflow** → **Run workflow**
 4. Wait for it to complete (green checkmark ✅)
-5. Check that `timetable.ics` file appears in your repository
+5. Open your chosen subscription URLs and confirm each downloads an `.ics` file.
 
    ![1762412750395](images/README/1762412750395.png)
 
@@ -175,7 +174,7 @@ The GitHub Action workflow runs automatically:
 - **Daily** at **6:00 AM** (Malaysia Time)
 - Fetches your latest class timetable from TARUMT portal
 - Fetches your exam schedule (if available)
-- Combines both into a single `.ics` file
+- Generates one combined calendar and four separate `.ics` feeds
 - Publishes it via GitHub Pages
 
 Your calendar apps will automatically refresh and show the latest schedule including exams!
@@ -217,26 +216,21 @@ If you want to test or generate the timetable locally:
 ### Commands
 
 ```bash
-# Generate combined timetable (classes + exams)
 npm run generate
-
-# Legacy: Generate exam timetable only
-npm run generate-exam
+npm test
 ```
 
-The generated `.ics` files will open automatically on macOS.
-
-> **Note:** The main `timetable.ics` file now includes BOTH classes and exams, so you typically only need to subscribe to one calendar!
-
----
+Local files are generated in the current directory and can be imported manually. Imports do not refresh automatically; use the Pages subscription URLs for automatic updates.
 
 ## 📂 Generated Files
 
-
-| File                 | Description                                                                     |
-| -------------------- | ------------------------------------------------------------------------------- |
-| `timetable.ics`      | **Main file** - Combined class schedule AND exam timetable (subscribe to this!) |
-| `exam_timetable.ics` | Legacy exam-only file (generated separately if you run`npm run generate-exam`)  |
+| File | Contents |
+| --- | --- |
+| `timetable.ics` | All classes and exams (recommended; original subscription URL) |
+| `timetable_normal.ics` | Normal classes |
+| `timetable_holidays.ics` | Holiday clashes |
+| `timetable_replacements.ics` | Replacement classes |
+| `timetable_exams.ics` | Exams |
 
 ---
 
@@ -253,7 +247,8 @@ The generated `.ics` files will open automatically on macOS.
 **No timetable data:**
 
 - This is normal if the semester hasn't started yet or exams aren't scheduled
-- The workflow will complete successfully and generate what's available
+- Valid empty responses generate empty feeds; exams can still be published without teaching weeks.
+- Failed requests or malformed responses fail the workflow and preserve the last deployed calendars.
 - Classes will appear once the semester starts
 - Exams will appear once they're scheduled in the system
 
