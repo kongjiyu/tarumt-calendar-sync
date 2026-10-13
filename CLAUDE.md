@@ -1,6 +1,6 @@
 # Project guidance
 
-TARUMT calendar sync generates four public subscription feeds: timetable_normal.ics,
+TARUMT calendar sync generates a combined timetable.ics feed plus four category feeds: timetable_normal.ics,
 timetable_holidays.ics, timetable_replacements.ics, and timetable_exams.ics.
 
 - `npm install`: install dotenv (Node.js 18+).
@@ -9,7 +9,7 @@ timetable_holidays.ics, timetable_replacements.ics, and timetable_exams.ics.
 - generateTimetable.js authenticates, discovers weeks, fetches each week, and builds the feeds.
 - Empty timetable responses may omit weeks; exams must still be fetched.
 - Failed requests or malformed data must set a nonzero exit code before publishing any files.
-- The workflow deploys all four files as one Pages artifact. Set Pages source to GitHub Actions.
+- The workflow deploys all five files as one Pages artifact. Set Pages source to GitHub Actions.
 - Generated calendars are ignored by Git. Do not commit personal schedules.
 - Calendar event times use Asia/Kuala_Lumpur. Preserve API request signing and mobile headers.
-- The old timetable.ics subscription is retired; see both READMEs for migration steps.
+- Keep the original timetable.ics subscription URL working; the combined feed contains all category events.

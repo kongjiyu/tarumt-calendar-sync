@@ -318,13 +318,16 @@ async function main() {
             }
         }
 
-        // 4. Write all 4 calendar files
+        // 4. Publish the original combined feed alongside the optional category feeds.
+        const allEvents = [...normalEvents, ...holidayEvents, ...replacementEvents, ...examEvents];
+        fs.writeFileSync("timetable.ics", buildICSContent(allEvents, "TARUMT - Timetable"));
         fs.writeFileSync("timetable_normal.ics", buildICSContent(normalEvents, "TARUMT - Classes"));
         fs.writeFileSync("timetable_holidays.ics", buildICSContent(holidayEvents, "TARUMT - Holiday Clashes"));
         fs.writeFileSync("timetable_replacements.ics", buildICSContent(replacementEvents, "TARUMT - Replacements"));
         fs.writeFileSync("timetable_exams.ics", buildICSContent(examEvents, "TARUMT - Exams"));
 
         log(`\n🎉 Calendars successfully generated:`);
+        log(`- timetable.ics: ${allEvents.length} events`);
         log(`- timetable_normal.ics: ${normalEvents.length} events`);
         log(`- timetable_holidays.ics: ${holidayEvents.length} events`);
         log(`- timetable_replacements.ics: ${replacementEvents.length} events`);

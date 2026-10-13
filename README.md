@@ -63,7 +63,16 @@ Your TARUMT credentials need to be stored securely in GitHub:
 
 In **Settings → Pages → Build and deployment → Source**, select **GitHub Actions**.
 
-### Step 4: Subscribe to the Separate Calendars
+### Step 4: Choose Your Subscription
+
+**Recommended: keep the original combined calendar.** One subscription includes normal classes, holiday clashes, replacements, and exams. Existing subscribers can keep the same URL:
+
+```text
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
+```
+
+**Optional: subscribe to separate calendars** to assign different colors to each category. Choose either the combined feed or the category feeds to avoid displaying duplicate events.
+
 
 Replace `YOUR_GITHUB_USERNAME` below with your own username. Add each desired URL as a separate subscription and assign it a color:
 
@@ -76,7 +85,7 @@ https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_exams.ics
 
 These feeds contain normal classes, holiday clashes, replacement classes, and exams respectively. A holiday clash is informational; it does not confirm that the class will take place.
 
-**Migrating from the old version:** `timetable.ics` is no longer published. After syncing your fork, switch the Pages source to GitHub Actions and run the workflow manually. Verify the new URLs, add the new subscriptions, then remove the old subscription to avoid duplicates. Calendar files are generated and deployed by Actions, so they will not appear in the repository file list. Their public subscription URLs remain accessible to others.
+**Upgrading from the old version:** Keep your existing `timetable.ics` subscription. After syncing your fork, switch the Pages source to GitHub Actions and run the workflow manually. All five files are generated and deployed by Actions without being committed to the repository. Their public subscription URLs remain accessible to others.
 
 ### Step 5: Test the Workflow
 
@@ -86,7 +95,7 @@ Before subscribing, let's make sure everything works:
 2. Click on **Update Timetable Daily** workflow
 3. Click **Run workflow** → **Run workflow**
 4. Wait for it to complete (green checkmark ✅)
-5. Open the four subscription URLs and confirm each downloads an `.ics` file.
+5. Open your chosen subscription URLs and confirm each downloads an `.ics` file.
 
    ![1762412750395](images/README/1762412750395.png)
 
@@ -165,7 +174,7 @@ The GitHub Action workflow runs automatically:
 - **Daily** at **6:00 AM** (Malaysia Time)
 - Fetches your latest class timetable from TARUMT portal
 - Fetches your exam schedule (if available)
-- Generates four separate `.ics` feeds
+- Generates one combined calendar and four separate `.ics` feeds
 - Publishes it via GitHub Pages
 
 Your calendar apps will automatically refresh and show the latest schedule including exams!
@@ -217,6 +226,7 @@ Local files are generated in the current directory and can be imported manually.
 
 | File | Contents |
 | --- | --- |
+| `timetable.ics` | All classes and exams (recommended; original subscription URL) |
 | `timetable_normal.ics` | Normal classes |
 | `timetable_holidays.ics` | Holiday clashes |
 | `timetable_replacements.ics` | Replacement classes |
@@ -263,7 +273,7 @@ Local files are generated in the current directory and can be imported manually.
 **Check GitHub Pages:**
 
 - Settings → Pages → Make sure it's enabled and deployed
-- The URL should be: `https://YOUR_USERNAME.github.io/tarumt-calendar-sync/timetable_normal.ics`
+- The URL should be: `https://YOUR_USERNAME.github.io/tarumt-calendar-sync/timetable.ics`
 
 **Repository must be public:**
 
@@ -289,7 +299,7 @@ Your classmates can fork this repository and follow the same steps to create the
 Or, if you want to share your timetable with others:
 
 ```
-https://YOUR_USERNAME.github.io/tarumt-calendar-sync/timetable_normal.ics
+https://YOUR_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
 ```
 
 They can subscribe to this URL to see your schedule (useful for group projects or study sessions).

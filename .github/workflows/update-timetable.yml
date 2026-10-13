@@ -47,7 +47,7 @@ jobs:
         run: |
           mkdir -p public
           node generateTimetable.js
-          for file in timetable_normal.ics timetable_holidays.ics timetable_replacements.ics timetable_exams.ics; do
+          for file in timetable.ics timetable_normal.ics timetable_holidays.ics timetable_replacements.ics timetable_exams.ics; do
             test -s "$file"
             mv "$file" public/
           done

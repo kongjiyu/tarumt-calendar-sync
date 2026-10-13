@@ -63,7 +63,16 @@
 
 在仓库 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
 
-### 步骤 4：订阅四个分类日历
+### 步骤 4：选择订阅方式
+
+**推荐：保留原本的完整日历。** 只需订阅一个地址，即可查看普通课程、假期冲突课程、补课及考试；已有订阅无需更换链接：
+
+```text
+https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable.ics
+```
+
+**可选：分别订阅四个分类日历。** 如果想为不同类别设置颜色，可使用以下地址。请在完整日历和分类日历之间二选一，避免重复显示。
+
 
 将下面的 `YOUR_GITHUB_USERNAME` 替换为您自己的 GitHub 用户名，分别添加需要的日历订阅，并设置不同颜色：
 
@@ -76,7 +85,7 @@ https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_exams.ics
 
 依次对应：普通课程、公共假期冲突课程、补课、考试。假期冲突日历仅提示课程与假期重叠，不代表课程确认照常进行。
 
-**旧版迁移：** 原来的 `timetable.ics` 不再发布。同步 fork 后，将 Pages 来源改为 GitHub Actions，手动运行工作流，确认新链接可访问并添加新订阅后，再移除旧订阅，避免重复显示。日历文件由 Actions 生成并部署，不会出现在仓库文件列表；公开订阅链接仍可被他人访问。
+**旧版升级：** 保留原来的 `timetable.ics` 订阅即可。同步 fork 后，将 Pages 来源改为 GitHub Actions，并手动运行工作流。五个日历文件由 Actions 生成并部署，不提交到仓库；公开订阅链接仍可被他人访问。
 
 ### 步骤 5：测试工作流
 
@@ -86,7 +95,7 @@ https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_exams.ics
 2. 点击 **Update Timetable Daily** 工作流
 3. 点击 **Run workflow** → **Run workflow**
 4. 等待完成（绿色勾号 ✅）
-5. 打开四个订阅链接，确认各自可以下载 `.ics` 文件。
+5. 打开所选订阅链接，确认各自可以下载 `.ics` 文件。
 
    ![1762412750395](images/README/1762412750395.png)
 
@@ -166,7 +175,7 @@ GitHub Action 工作流自动运行：
 - **每天** **马来西亚时间早上 6:00**
 - 从 TARUMT 门户获取最新的课程表
 - 获取您的考试安排（如果有）
-- 生成四个分类 `.ics` 日历
+- 生成一个完整日历和四个分类 `.ics` 日历
 - 通过 GitHub Pages 发布
 
 您的日历应用将自动刷新并显示最新的课程安排，包括考试！
@@ -218,6 +227,7 @@ npm test
 
 | 文件 | 内容 |
 | --- | --- |
+| `timetable.ics` | 完整日历：全部课程与考试（推荐，兼容原订阅） |
 | `timetable_normal.ics` | 普通课程 |
 | `timetable_holidays.ics` | 公共假期冲突课程 |
 | `timetable_replacements.ics` | 补课 |
@@ -264,7 +274,7 @@ npm test
 **检查 GitHub Pages：**
 
 - Settings → Pages → 确保已启用并部署
-- 链接应该是：`https://您的用户名.github.io/tarumt-calendar-sync/timetable_normal.ics`
+- 链接应该是：`https://您的用户名.github.io/tarumt-calendar-sync/timetable.ics`
 
 **仓库必须是公开的：**
 
@@ -290,7 +300,7 @@ npm test
 或者，如果您想与他人分享您的课程表：
 
 ```
-https://您的用户名.github.io/tarumt-calendar-sync/timetable_normal.ics
+https://您的用户名.github.io/tarumt-calendar-sync/timetable.ics
 ```
 他们可以订阅此链接以查看您的课程安排（适用于小组项目或学习会话）。
 

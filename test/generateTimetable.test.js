@@ -42,9 +42,14 @@ test('routes classes, holiday clashes, replacements and exams to separate feeds'
         1: week('13/10/2026'), 2: holiday, 3: week('20/10/2026', { replace: 'Y' })
     });
     assert.equal(r.exitCode, 0);
-    assert.deepEqual(Object.values(r.counts), [1, 1, 1, 1]);
+    assert.deepEqual(Object.values(r.counts), [4, 1, 1, 1, 1]);
     assert.match(r.files['timetable_normal.ics'], /DTSTART;TZID=Asia\/Kuala_Lumpur:20261013T090000/);
-    assert.equal(r.files['timetable.ics'], undefined);
+    const events = text => text.match(/BEGIN:VEVENT[\s\S]*?END:VEVENT/g) || [];
+    const combined = events(r.files['timetable.ics']);
+    const categories = ['normal', 'holidays', 'replacements', 'exams']
+        .flatMap(name => events(r.files[`timetable_${name}.ics`]));
+    assert.deepEqual(combined, categories);
+    assert.equal(new Set(combined.map(event => event.match(/UID:([^\n]+)/)[1])).size, 4);
 });
 test('one failed week prevents publishing partial calendars', async () => {
     assertFailed(await run({ rec: [], weeks: ['1', '2'] }, { 1: week('13/10/2026'), 2: new Error('timeout') }));
@@ -59,12 +64,13 @@ test('valid empty timetable without weeks still generates exams', async () => {
     const r = await run({ rec: [] });
     assert.equal(r.exitCode, 0);
     assert.equal(r.counts['timetable_exams.ics'], 1);
+    assert.equal(r.counts['timetable.ics'], 1);
     assert.equal(r.counts['timetable_normal.ics'], 0);
 });
 test('valid empty semester and exam responses publish empty feeds', async () => {
     const r = await run({ rec: [], weeks: [] }, {}, { rec: [] });
     assert.equal(r.exitCode, 0);
-    assert.deepEqual(Object.values(r.counts), [0, 0, 0, 0]);
+    assert.deepEqual(Object.values(r.counts), [0, 0, 0, 0, 0]);
 });
 test('failed overview still requests exams but prevents destructive deployment', async () => {
     const r = await run(new Error('timeout'));
