@@ -130,7 +130,13 @@ async function getExamTimetable(token) {
         const raw = await response.text();
         const match = raw.match(/{[\s\S]*}/);
         if (!match) throw new Error("Exam response does not contain valid JSON");
-        return JSON.parse(match[0]);
+        const data = JSON.parse(match[0]);
+        // TARUMT returns this explicit state when the exam timetable is not open.
+        if (data.msg === "pending" && data.msgdesc === "Closed!" && data.rec === undefined) {
+            log("Exam timetable is closed; no exams are currently published.");
+            return { ...data, rec: [] };
+        }
+        return data;
     } catch (error) {
         log("❌ Error fetching exam timetable: " + error.message);
         return null;

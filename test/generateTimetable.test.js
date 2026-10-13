@@ -86,3 +86,14 @@ test('missing weeks with nonempty data and malformed schemas fail safely', async
 test('HTTP failure is not interpreted as valid calendar data', async () => {
     assertFailed(await run({ rec: [] }, {}, exam, { httpError: 503 }));
 });
+
+// Observed in the production API response when exam publication is closed.
+test('explicit closed exam timetable is a valid empty schedule', async () => {
+    const r = await run({ rec: [], weeks: ['all'] }, {}, { msg: 'pending', msgdesc: 'Closed!' });
+    assert.equal(r.exitCode, 0);
+    assert.deepEqual(Object.values(r.counts), [0, 0, 0, 0, 0]);
+});
+test('unknown pending and error responses still block deployment', async () => {
+    assertFailed(await run({ rec: [] }, {}, { msg: 'pending', msgdesc: 'Unknown state' }));
+    assertFailed(await run({ rec: [] }, {}, { msg: 'error', msgdesc: 'Closed!' }));
+});
