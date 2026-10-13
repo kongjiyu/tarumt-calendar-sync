@@ -105,7 +105,7 @@ https://YOUR_GITHUB_USERNAME.github.io/tarumt-calendar-sync/timetable_exams.ics
 
    ![1769262620203](images/README_CN/1769262620203.png)
 
-```> **注意：** 如果您对代码进行了自定义更改，可能需要解决合并冲突。最常见的更新将是生成器脚本中的错误修复和新功能。
+> **注意：** 如果您对代码进行了自定义更改，可能需要解决合并冲突。最常见的更新将是生成器脚本中的错误修复和新功能。
 
 ---
 
