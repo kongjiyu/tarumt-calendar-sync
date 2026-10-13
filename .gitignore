@@ -3,3 +3,7 @@ node_modules/
 timetable.log
 .env
 package-lock.json
+
+# Generated personal calendars and Pages output
+*.ics
+public/

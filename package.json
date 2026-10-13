@@ -5,7 +5,7 @@
   "main": "generateTimetable.js",
   "scripts": {
     "generate": "node generateTimetable.js",
-    "generate-exam": "node generateExamTimetable.js"
+    "test": "node --test"
   },
   "dependencies": {
     "dotenv": "^16.0.0"

@@ -59,6 +59,7 @@ async function login() {
             body: loginData.toString()
         });
 
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const raw = await response.text();
         const jsonStart = raw.lastIndexOf("{");
         if (jsonStart === -1) {
@@ -96,6 +97,7 @@ async function getTimetableByWeek(token, week) {
             }
         });
 
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const raw = await response.text();
         const match = raw.match(/{[\s\S]*}/);
         if (!match) throw new Error(`Week ${week} response does not contain valid JSON`);
@@ -124,6 +126,7 @@ async function getExamTimetable(token) {
             }
         });
 
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const raw = await response.text();
         const match = raw.match(/{[\s\S]*}/);
         if (!match) throw new Error("Exam response does not contain valid JSON");
@@ -178,25 +181,35 @@ function buildICSContent(events, calendarName) {
 async function main() {
     try {
         if (!username || !password) {
-            log("ERROR: Missing TARUMT_USERNAME or TARUMT_PASSWORD");
-            process.exit(0);
+            throw new Error("Missing TARUMT_USERNAME or TARUMT_PASSWORD");
         }
 
         const token = await login();
         if (!token) {
-            log("Login failed - exiting.");
-            process.exit(0);
+            throw new Error("Login failed");
         }
 
         // 1. Discover all active weeks using week=all
         log("Discovering active semester weeks...");
-        const overview = await getTimetableByWeek(token, "all");
-        if (!overview || !overview.weeks) {
-            log("No semester weeks found.");
-            process.exit(0);
+        // Request exams independently, including when there are no teaching weeks.
+        const [overview, examTimetable] = await Promise.all([
+            getTimetableByWeek(token, "all"),
+            getExamTimetable(token)
+        ]);
+        if (!overview || !Array.isArray(overview.rec)) {
+            throw new Error("Invalid semester overview; keeping the published calendars unchanged");
         }
-
-        const activeWeeks = overview.weeks.filter(w => w !== "all");
+        if (!examTimetable || !Array.isArray(examTimetable.rec)) {
+            throw new Error("Invalid exam response; keeping the published calendars unchanged");
+        }
+        // A valid empty timetable may omit weeks. Missing weeks with classes is invalid.
+        if (overview.weeks !== undefined && !Array.isArray(overview.weeks)) {
+            throw new Error("Invalid semester weeks");
+        }
+        if (overview.weeks === undefined && overview.rec.length > 0) {
+            throw new Error("Semester weeks missing from a non-empty timetable");
+        }
+        const activeWeeks = (overview.weeks || []).filter(w => w !== "all");
         log(`Found ${activeWeeks.length} active weeks: ${activeWeeks.join(', ')}`);
 
         const normalEvents = [];
@@ -210,7 +223,9 @@ async function main() {
         for (const week of activeWeeks) {
             log(`Fetching Week ${week}...`);
             const weekData = await getTimetableByWeek(token, week);
-            if (!weekData || !weekData.rec) continue;
+            if (!weekData || !Array.isArray(weekData.rec)) {
+                throw new Error(`Week ${week} could not be fetched; keeping the published calendars unchanged`);
+            }
 
             for (const day of weekData.rec) {
                 if (!day.class || day.class.length === 0) continue;
@@ -276,8 +291,7 @@ async function main() {
         }
 
         // 3. Fetch Exam Schedule
-        log("Fetching exam schedule...");
-        const examTimetable = await getExamTimetable(token);
+        log("Processing exam schedule...");
         if (examTimetable && examTimetable.rec && examTimetable.rec.length > 0) {
             for (const exam of examTimetable.rec) {
                 const yyyy = exam.fexyear;
@@ -318,12 +332,10 @@ async function main() {
 
     } catch (error) {
         log(`❌ Error in main: ${error.message}`);
-        process.exit(0);
+        process.exitCode = 1;
     }
 }
 
-main();
-
-process.on('exit', () => {
-    logStream.end();
-});
+if (require.main === module) {
+    main().finally(() => logStream.end());
+}

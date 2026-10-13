@@ -47,7 +47,10 @@ jobs:
         run: |
           mkdir -p public
           node generateTimetable.js
-          mv timetable_*.ics public/
+          for file in timetable_normal.ics timetable_holidays.ics timetable_replacements.ics timetable_exams.ics; do
+            test -s "$file"
+            mv "$file" public/
+          done
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
