@@ -56,7 +56,8 @@ async function login() {
                 'X-Signature': signature,
                 'X-Timestamp': timestamp.toString()
             },
-            body: loginData.toString()
+            body: loginData.toString(),
+            signal: AbortSignal.timeout(15000)
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -94,7 +95,8 @@ async function getTimetableByWeek(token, week) {
                 'Origin': 'ionic://localhost',
                 'X-Signature': signature,
                 'X-Timestamp': timestamp.toString()
-            }
+            },
+            signal: AbortSignal.timeout(15000)
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -123,7 +125,8 @@ async function getExamTimetable(token) {
                 'Origin': 'ionic://localhost',
                 'X-Signature': signature,
                 'X-Timestamp': timestamp.toString()
-            }
+            },
+            signal: AbortSignal.timeout(15000)
         });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
@@ -339,12 +342,22 @@ async function main() {
         log(`- timetable_replacements.ics: ${replacementEvents.length} events`);
         log(`- timetable_exams.ics: ${examEvents.length} events`);
 
+        return 0;
     } catch (error) {
         log(`❌ Error in main: ${error.message}`);
-        process.exitCode = 1;
+        return 1;
     }
 }
 
 if (require.main === module) {
-    main().finally(() => logStream.end());
+    main().then((exitCode) => {
+        logStream.end(() => {
+            process.exit(exitCode);
+        });
+    }).catch((err) => {
+        console.error(err);
+        logStream.end(() => {
+            process.exit(1);
+        });
+    });
 }
