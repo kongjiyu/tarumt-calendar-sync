@@ -1,10 +1,7 @@
 name: Update Timetable Daily
 
 on:
-  schedule:
-    # Run every day at 6:00 AM Malaysia Time (UTC+8, which is 22:00 UTC previous day)
-    - cron: '0 22 * * *'
-  workflow_dispatch: # Allow manual trigger
+  workflow_dispatch: # Triggered at 6:00 AM MYT by cron-job.org (and manual triggers)
   push:
     branches:
       - main
@@ -24,34 +21,27 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    
+    timeout-minutes: 5
+    env:
+      TZ: Asia/Kuala_Lumpur
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        
-      - name: Set timezone
-        run: sudo timedatectl set-timezone Asia/Kuala_Lumpur
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          
-      - name: Install dependencies
-        run: npm install
-        
+
       - name: Generate timetables
         env:
           TARUMT_USERNAME: ${{ secrets.TARUMT_USERNAME }}
           TARUMT_PASSWORD: ${{ secrets.TARUMT_PASSWORD }}
         run: |
+          node -v
           mkdir -p public
           node generateTimetable.js
           for file in timetable.ics timetable_normal.ics timetable_holidays.ics timetable_replacements.ics timetable_exams.ics; do
             test -s "$file"
             mv "$file" public/
           done
-          
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
